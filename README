@@ -1,0 +1,105 @@
+-*- mode: fundamental; encoding: utf-8 -*-
+
+Provide a Maxima top-level function, utf8_hack, that hacks the Maxima
+parser to let non-utf8 aware Lisps to read (some) utf8-encoded Maxima
+source files.
+
+The hack works around the non-utf8 aware Lisps by interning the wide
+characters as symbols and coercing the symbols to lists of (narrow)
+characters. These narrow characters are used as hash keys
+in *alpha-char-hash*, whose values are a list of conses of the form
+
+("DESCRIPTION OF CHARACTER" . CHARACTER)
+
+where the CDR is, of course, not the character per se, but the
+character as an interned symbol.
+
+The Maxima function `alphabetp' in src/nparse.lisp is modified to use
+this hash table to verify is a character is alphabetical.
+
+In the present configuration, utf8_hack admits only the Greek
+alphabet (including accented characters) and all characters denoted as
+mathematical. There is Emacs Lisp code in utf8-hack.lisp that allows
+for the user to generate a wider or narrower default.
+
+Finally, utf8_hack.lisp includes two Maxima top-level functions:
+
+        --utf8_hack(regexp):
+
+	Regexp may be MAXIMA-NREGEX regular expression, `all' or
+	empty. This function alters the range of accepted utf8
+	characters by choosing only those whose description matches
+	`regexp'.
+
+	If `regexp' is `all', the default is restored; if `regexp' is
+	empty (or `false'), then all non-ascii characters are made
+	non-alphabetical.
+
+	Examples:
+
+		./maxima-local --lisp=gcl
+		Maxima 5.28.0_179_g3ddde46 http://maxima.sourceforge.net
+		using Lisp GNU Common Lisp (GCL) GCL 2.6.7 (a.k.a. GCL)
+		Distributed under the GNU Public License. See the file COPYING.
+		Dedicated to the memory of William Schelter.
+		The function bug_report() provides bug reporting information.
+		(%i1) ρ : cos(θ);
+		incorrect syntax: � is not an infix operator
+		\317\201
+		^
+		(%i1) load("utf8-hack.lisp");
+		(%o1)                           utf8-hack.lisp
+		(%i2) ρ : cos(θ);
+		(%o2)                               cos(θ)
+		(%i3) utf8_hack("math");
+		(%o3)                                done
+		(%i4) ρ : cos(θ);
+		incorrect syntax: � is not an infix operator
+		\317\201Space
+		 ^
+		(%i4) 𝝔 : cos(𝝑);
+		(%o4)                              cos(𝝑)
+		(%i5) utf8_hack("greek");
+		(%o5)                                done
+		(%i6) 𝝔 : cos(𝝑);
+		incorrect syntax: ��� is not an infix operator
+		\360\235\235\224Space
+		   ^
+		(%i6) ρ : cos(θ);
+		(%o6)                               cos(θ)
+
+		In (%i1), Maxima's parser flags an error due to the
+		wide utf8 character. After loading utf8-hack.lisp, the
+		parser parses (%i2) successfully.
+
+		In (%i3), utf8_hack redefines the alphabetical
+		characters to include only those extra characters that
+		have "math" in the description. (%i4) shows that the
+		parses treats the Greek characters as in the first
+		line. The second (%i4) is the same line, but with
+		mathematical rho and theta. In (%i5), we redefine the
+		alphabetical characters to include only the extra
+		Greek characters; in (%i6) we see the parser chokes on
+		the mathematical characters, but reads the Greek
+		characters successfully.
+
+	--print_alpha_char_hash()
+
+	Prints the current hash-table *alpha-char-hash*.
+
+		(%i7) print_alpha_char_hash();
+		#\\231 = ((GREEK CAPITAL LETTER IOTA WITH MACRON . Ῑ)
+	                (GREEK CAPITAL LETTER ETA WITH DASIA AND PROSGEGRAMMENI
+	                 . ᾙ)
+	                (GREEK CAPITAL LETTER UPSILON WITH DASIA . Ὑ)
+	                (GREEK CAPITAL LETTER EPSILON WITH DASIA . Ἑ)
+	                (GREEK SMALL LETTER ARCHAIC KOPPA . ϙ)
+	                (GREEK CAPITAL LETTER IOTA . Ι))
+	
+			...
+	
+		(%o7)                                done
+		
+	WARNING: this is a HACK. Some wide characters will be
+	recognized as alphabetical, even if they are not explicitly
+	included. You have been warned.
