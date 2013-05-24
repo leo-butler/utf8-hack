@@ -1,5 +1,5 @@
 ;; -*- mode: lisp; encoding: utf-8 -*-
-;; Copyright Leo Butler (l.butler@cmich.edu) 2013
+;; Copyright Leo Butler (leo.butler@member.fsf.org) 2013
 ;; Released under the terms of GPLv3+
 
 #|
