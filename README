@@ -103,3 +103,7 @@ Finally, utf8_hack.lisp includes two Maxima top-level functions:
 	WARNING: this is a HACK. Some wide characters will be
 	recognized as alphabetical, even if they are not explicitly
 	included. You have been warned.
+
+utf8-hack-data.lisp contains the data the is read when utf8-hack.lisp
+is read. To generate a new version of this file, evaluate the buffer
+utf8-hack.el in Emacs.
