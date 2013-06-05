@@ -25,14 +25,14 @@
 		(mapcar
 		 (lambda (x)
 		   (if (funcall selector x)
-		       (format "(list (coerce (symbol-name '|%c|) 'list) '(%S . |%c|))\n" (cdr x) (car x) (cdr x))))
+		       (format "'(|%c| %S)" (cdr x) (car x))))
 		 (ucs-names)))
 	 'utf-8-unix)))
   (if (get-buffer data-file) (kill-buffer data-file))
   (if (file-exists-p data-file) (delete-file data-file))
   (save-excursion
     (find-file-literally data-file)
-    (insert ";; -*- mode:lisp; encoding: utf-8 -*-\n#.(list ")
+    (insert ";; -*- mode:lisp; coding: utf-8 -*-\n#.(list ")
     (insert ucs-char-list)
     (insert ")")
     (basic-save-buffer)

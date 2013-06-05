@@ -87,16 +87,22 @@ symbols. This is a hack to enable the use of wide characters in
 non-UTF8 Lisps.")
 
 (let* ((ach (make-hash-table :test #'eql))
-       (data-file ($file_search1 "utf8-hack-data.lisp" '((mlist) $file_search_lisp)))
-       (set-alpha-char
-	(lambda (u)
-	  (apply
-	   (lambda (z y)
-	     (mapc (lambda (x)
-		     (push y (gethash x ach))
-		     (push y (gethash x *alpha-char-hash*))) z)) u))))
+       (data-file ($file_search1 "utf8-hack-data.lisp" '((mlist) $file_search_lisp))))
+
   (setf *alpha-char-hash*  (make-hash-table :test #'eql))
-  (mapc set-alpha-char (with-open-file (instr data-file :direction :input) (read instr :eof-error-p nil :eof-value)))
+
+  (defmfun $set_alpha_char (char-sym description)
+    "A user-level function to add a wide character to the hashtable of
+known alphabetical characters."
+    (let ((char-sym-list (coerce (symbol-name char-sym) 'list))
+	  (csd (cons description char-sym)))
+      (mapc (lambda (c)
+	      (push csd (gethash c ach))
+	      (push csd (gethash c *alpha-char-hash*))) char-sym-list))
+    '$done)
+
+  (loop for (char-sym description) in (with-open-file (instr data-file :direction :input) (read instr :eof-error-p nil :eof-value)) by #'cddr
+       do ($set_alpha_char char-sym description))
   
   (defmfun $utf8_hack (&optional regexp)
 	   "Select the wide characters via a MAXIMA-NREGEX regexp. If
