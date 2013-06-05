@@ -101,7 +101,7 @@ known alphabetical characters."
 	      (push csd (gethash c *alpha-char-hash*))) char-sym-list))
     '$done)
 
-  (loop for (char-sym description) in (with-open-file (instr data-file :direction :input) (read instr :eof-error-p nil :eof-value)) by #'cddr
+  (loop for (char-sym description) in (with-open-file (instr data-file :direction :input) (read instr :eof-error-p nil :eof-value))
        do ($set_alpha_char char-sym description))
   
   (defmfun $utf8_hack (&optional regexp)
