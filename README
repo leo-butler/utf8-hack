@@ -1,4 +1,4 @@
--*- mode: fundamental; encoding: utf-8 -*-
+-*- mode: fundamental; coding: utf-8 -*-
 
 Provide a Maxima top-level function, utf8_hack, that hacks the Maxima
 parser to let non-utf8 aware Lisps to read (some) utf8-encoded Maxima
@@ -15,7 +15,7 @@ where the CDR is, of course, not the character per se, but the
 character as an interned symbol.
 
 The Maxima function `alphabetp' in src/nparse.lisp is modified to use
-this hash table to verify is a character is alphabetical.
+this hash table to verify if a character is alphabetical.
 
 In the present configuration, utf8_hack admits only the Greek
 alphabet (including accented characters) and all characters denoted as
