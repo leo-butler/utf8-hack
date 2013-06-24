@@ -113,9 +113,9 @@ known alphabetical characters."
 	   (let ((selector (cond ((stringp regexp)
 				  (coerce (maxima-nregex:regex-compile regexp :case-sensitive nil) 'function))
 				 ((eql regexp '$all)
-				  (lambda (x) t))
+				  (lambda (x) (declare (ignore x)) t))
 				 ((null regexp)
-				  (lambda (x) nil))
+				  (lambda (x) (declare (ignore x)) nil))
 				 (t
 				  (merror "utf8_hack(regexp), regexp must be a string, the symbol `all' or empty.")))))
 	     (setf *alpha-char-hash*  (make-hash-table :test #'eql))
