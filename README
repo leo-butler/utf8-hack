@@ -26,10 +26,31 @@ Finally, utf8_hack.lisp includes three Maxima top-level functions:
 
 	--set_alpha_char (char_sym, description)
 
-	Add a wide character, denoted by char_sym, to the hashtable of
-       	known alphabetical characters. The char_sym may be a quoted
-       	character, a symbol or an integer; description should be a
-       	string.
+	Add a wide character, denoted by `char_sym', to the hashtable
+       	of known alphabetical characters. The `char_sym' may be a
+       	quoted character, a symbol or an integer; `description' should
+       	be a string.
+
+	Example:
+
+                Maxima branch_5_36_base_198_g1a81b10 http://maxima.sourceforge.net
+                using Lisp SBCL 1.2.14.debian
+                Distributed under the GNU Public License. See the file COPYING.
+                Dedicated to the memory of William Schelter.
+                The function bug_report() provides bug reporting information.
+                (%i1) z̄ : conjugate(z);
+
+                incorrect syntax: ̄ is not an infix operator
+                z̄
+                 ^
+		(%i1) load("utf8-hack.lisp")$
+                (%i2) set_alpha_char(772,"Non-spacing macron");
+                
+                (%o2) done
+                (%i3) z̄ : conjugate(z);
+                
+                (%o3) conjugate(z);
+                
 
         --utf8_hack(regexp):
 
