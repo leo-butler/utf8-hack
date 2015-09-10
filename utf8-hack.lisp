@@ -94,14 +94,19 @@ non-UTF8 Lisps.")
   (defmfun $set_alpha_char (char-sym description)
     "A user-level function to add a wide character to the hashtable of
 known alphabetical characters."
-    (let ((char-sym-list (coerce (symbol-name char-sym) 'list))
+    (let ((char-sym-list (coerce (cond ((stringp char-sym) char-sym)
+				       ((symbolp char-sym) (symbol-name char-sym))
+				       #+(or sbcl clisp)
+				       ((and (integerp char-sym) (< 127. char-sym) (> 917999. char-sym)) (format nil "~c" (code-char char-sym)))
+				       (t (merror "first argument must be a string, symbol or integer")))
+				 'list))
 	  (csd (cons description char-sym)))
       (mapc (lambda (c)
 	      (push csd (gethash c ach))
 	      (push csd (gethash c *alpha-char-hash*))) char-sym-list))
     '$done)
 
-  (loop for (char-sym description) in (with-open-file (instr data-file :direction :input) (read instr :eof-error-p nil :eof-value))
+  (loop for (char-sym description) in (with-open-file (instr data-file :direction :input) (read instr t nil nil))
        do ($set_alpha_char char-sym description))
   
   (defmfun $utf8_hack (&optional regexp)
