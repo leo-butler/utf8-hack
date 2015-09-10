@@ -22,7 +22,14 @@ alphabet (including accented characters) and all characters denoted as
 mathematical. There is Emacs Lisp code in utf8-hack.lisp that allows
 for the user to generate a wider or narrower default.
 
-Finally, utf8_hack.lisp includes two Maxima top-level functions:
+Finally, utf8_hack.lisp includes three Maxima top-level functions:
+
+	--set_alpha_char (char_sym, description)
+
+	Add a wide character, denoted by char_sym, to the hashtable of
+       	known alphabetical characters. The char_sym may be a quoted
+       	character, a symbol or an integer; description should be a
+       	string.
 
         --utf8_hack(regexp):
 
