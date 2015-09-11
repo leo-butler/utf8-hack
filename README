@@ -1,8 +1,9 @@
 -*- mode: fundamental; coding: utf-8 -*-
 
-Provide a Maxima top-level function, utf8_hack, that hacks the Maxima
-parser to let non-utf8 aware Lisps to read (some) utf8-encoded Maxima
-source files.
+Hack the Maxima parser to let non-utf8 aware Lisps to read (some)
+utf8-encoded Maxima source files. It can also be used to extend the
+alphabetic character set of utf8-aware Lisps, so that non-spacing
+characters can be used, too (see below).
 
 The hack works around the non-utf8 aware Lisps by interning the wide
 characters as symbols and coercing the symbols to lists of (narrow)
@@ -19,7 +20,7 @@ this hash table to verify if a character is alphabetical.
 
 In the present configuration, utf8_hack admits only the Greek
 alphabet (including accented characters) and all characters denoted as
-mathematical. There is Emacs Lisp code in utf8-hack.lisp that allows
+mathematical. There is Emacs Lisp code in utf8-hack.el that allows
 for the user to generate a wider or narrower default.
 
 Finally, utf8_hack.lisp includes three Maxima top-level functions:
@@ -134,4 +135,8 @@ Finally, utf8_hack.lisp includes three Maxima top-level functions:
 
 utf8-hack-data.lisp contains the data the is read when utf8-hack.lisp
 is read. To generate a new version of this file, evaluate the buffer
-utf8-hack.el in Emacs.
+utf8-hack.el in Emacs and then evaluate
+
+(utf8-hack <regexp>)
+
+to generate the utf8-hack-data.lisp file.
